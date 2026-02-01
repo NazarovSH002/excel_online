@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Файловое хранилище | Система Учета</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-logo"><i class="fas fa-folder-open"></i> Система Учета</div>
+        <div id="nav-links-container" class="nav-links"></div>
+        <div class="user-profile-container" id="profile-trigger">
+            <div class="user-avatar" id="header-avatar">?</div>
+            <span class="user-name" id="header-username">Загрузка...</span>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="dropdown-item" id="btn-change-pass"><i class="fas fa-key"></i> Сменить пароль</button>
+                <button class="dropdown-item danger" id="btn-logout-action"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="card">
+            <h2><i class="fas fa-file-alt"></i> Доступные документы</h2>
+            <p style="margin-bottom: 20px; color: #666;">Здесь вы можете скачать приказы, инструкции и отчеты вашего отдела.</p>
+            
+            <div class="table-responsive">
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Дата загрузки</th>
+                            <th>Название файла</th>
+                            <th>Автор</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody id="files-page-body">
+                        <tr><td colspan="4" style="text-align:center">Загрузка списка файлов...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Простой скрипт загрузки файлов специально для этой страницы
+        document.addEventListener('DOMContentLoaded', async () => {
+            const tbody = document.getElementById('files-page-body');
+            try {
+                const response = await authorizedFetch('/api/files');
+                const files = await response.json();
+                
+                if (files.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">Файлы пока не загружены</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = files.map(f => `
+                    <tr>
+                        <td>${new Date(f.upload_date).toLocaleDateString()}</td>
+                        <td><strong>${f.file_name}</strong></td>
+                        <td>${f.uploader}</td>
+                        <td>
+                            <a href="/api/files/${f.file_path}" target="_blank" class="btn-small">
+                                <i class="fas fa-download"></i> Скачать
+                            </a>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center">Ошибка при получении файлов</td></tr>';
+            }
+        });
+    </script>
+</body>
+</html>

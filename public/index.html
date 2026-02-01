@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему | Excel Collab</title>
+    
+    <script>
+        if (localStorage.getItem('token')) {
+            window.location.replace('dashboard.html');
+        }
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="login-card">
+            <div class="logo-area">
+                <div style="font-size: 3rem; color: #2563eb; margin-bottom: 10px;">
+                    <i class="fas fa-file-excel"></i>
+                </div>
+                <h1>Excel редактор</h1>
+                <p>Пожалуйста, войдите в свой аккаунт</p>
+            </div>
+
+            <div id="error-message" class="alert error" style="display: none;"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login">Логин</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="login" placeholder="Введите ваш логин" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="password" placeholder="Введите ваш пароль" required autocomplete="current-password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-block" id="login-btn">
+                    <span>Войти в систему</span>
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <p><i class="fas fa-headset"></i> Техподдержка: +998 99-070-64-46</p>
+                <p style="margin-top: 5px; opacity: 0.6;">v 1.0.4 | 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>

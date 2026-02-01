@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Администрирование | Система Учета</title>
+    
+    <script>
+        (function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || user.role !== 'admin') {
+                window.location.replace('dashboard.html');
+            }
+        })();
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .status-blocked { color: #dc2626; font-weight: bold; }
+        .status-active { color: #16a34a; font-weight: bold; }
+        .import-section {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed #3b82f6;
+            margin-top: 20px;
+        }
+        /* Гарантия видимости модального окна */
+        .modal-overlay { z-index: 2000; }
+        .profile-dropdown.show { display: flex !important; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <i class="fas fa-cogs"></i> Администрирование
+        </div>
+    
+        <div id="nav-links-container" class="nav-links"></div>
+    
+        <div class="user-profile-container" id="profile-trigger">
+            <div class="user-avatar" id="header-avatar">?</div>
+            <span class="user-name" id="header-username">Загрузка...</span>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
+    
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="dropdown-item" id="btn-change-pass"><i class="fas fa-key"></i> Сменить пароль</button>
+                <button class="dropdown-item danger" id="btn-logout-action"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="main-content-grid">
+            
+            <div style="flex: 1; min-width: 350px;">
+                <div class="card">
+                    <h2><i class="fas fa-user-plus"></i> Регистрация сотрудника</h2>
+                    <form id="create-user-form">
+                        <div class="form-group">
+                            <label>Логин (ФИО пользователя)</label>
+                            <input type="text" name="login" required placeholder="Напр: Иван Иванов">
+                        </div>
+                        <div class="form-group">
+                            <label>Пароль</label>
+                            <input type="password" name="password" required placeholder="Минимум 6 символов">
+                        </div>
+                        <div class="form-group">
+                            <label>Роль в системе</label>
+                            <select name="role" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                                <option value="executor">Исполнитель</option>
+                                <option value="manager">Начальник района</option>
+                                <option value="inspector">Инспектор</option>
+                                <option value="admin">Администратор</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Название района</label>
+                            <input type="text" name="district_name" placeholder="Напр: Чирчик">
+                        </div>
+                        <button type="submit" class="btn btn-block"><i class="fas fa-save"></i> Создать</button>
+                    </form>
+                </div>
+
+                <div class="card import-section">
+                    <h3><i class="fas fa-file-excel"></i> Массовый импорт</h3>
+                    <p style="font-size: 0.8rem; margin-bottom: 10px;">Загрузите Excel-файл со списком сотрудников (Login, Password, Role, District_Name).</p>
+                    <input type="file" id="excel-import-input" accept=".xlsx, .xls" style="font-size: 0.8rem; margin-bottom: 10px;">
+                    <button class="btn btn-block btn-small" id="btn-import-excel" style="background: #16a34a;">
+                        <i class="fas fa-upload"></i> Импортировать из Excel
+                    </button>
+                </div>
+            </div>
+
+            <div class="card" style="flex: 2;">
+                <h2><i class="fas fa-users"></i> Управление персоналом</h2>
+                <div class="table-responsive">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Логин (Имя)</th>
+                                <th>Роль</th>
+                                <th>Район</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <tr><td colspan="5" style="text-align:center">Загрузка данных...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h2><i class="fas fa-history"></i> Журнал системных событий</h2>
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Исполнитель</th>
+                            <th>Действие</th>
+                            <th>Объект</th>
+                            <th>Детали</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-user-modal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Управление доступом</h3>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="edit-user-form" class="modal-form">
+                <input type="hidden" id="edit-user-id">
+                <div class="form-group">
+                    <label>Изменить район (Ротация)</label>
+                    <input type="text" id="edit-district-name" name="district_name" placeholder="Новое название района">
+                </div>
+                <div class="form-group">
+                    <label>Установить новый пароль</label>
+                    <input type="password" id="edit-new-password" name="password" placeholder="Оставьте пустым, если не меняете">
+                </div>
+                <button type="submit" class="btn btn-block">Сохранить изменения</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script> 
+    <script src="js/modules/admin_panel.js"></script> 
+</body>
+</html>

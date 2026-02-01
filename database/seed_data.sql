@@ -1,2 +1,2 @@
-// File: README.md
+// File: seed_data.sql
 // Created automatically for Excel Collab System

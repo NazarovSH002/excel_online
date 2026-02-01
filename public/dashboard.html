@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная панель | Excel Collab</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <i class="fas fa-layer-group"></i> Система Учета
+        </div>
+
+        <div id="nav-links-container" class="nav-links"></div>
+
+        <div class="user-profile-container" id="profile-trigger">
+            <div class="user-avatar" id="header-avatar">?</div>
+            <span class="user-name" id="header-username">Загрузка...</span>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
+
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="dropdown-item" id="btn-change-photo">
+                    <i class="fas fa-camera"></i> Сменить фото
+                </button>
+                <button class="dropdown-item" id="btn-change-pass">
+                    <i class="fas fa-key"></i> Сменить пароль
+                </button>
+                <button class="dropdown-item danger" id="btn-logout-action">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        
+        <div class="welcome-section" style="margin-bottom: 30px;">
+            <h1 id="welcome-title">Добро пожаловать в систему!</h1>
+            <p style="color: #666;">Используйте навигационную панель выше для работы с данными или общения.</p>
+        </div>
+
+        <div id="admin-panel-wrapper" style="display: none;">
+            
+            <h2 style="margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
+                <i class="fas fa-tachometer-alt"></i> Сводка системы
+            </h2>
+
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <h3>Всего строк</h3>
+                    <p class="stat-number" id="stat-total">...</p>
+                </div>
+                <div class="card stat-card">
+                    <h3>Сумма (млн)</h3>
+                    <p class="stat-number" id="stat-money">...</p>
+                </div>
+                <div class="card stat-card error">
+                    <h3>Ошибки</h3>
+                    <p class="stat-number" id="stat-errors">...</p>
+                </div>
+                <div class="card stat-card success">
+                    <h3>Завершено</h3>
+                    <p class="stat-number" id="stat-done">...</p>
+                </div>
+            </div>
+
+            <div class="main-content-grid">
+                
+                <div class="card">
+                    <h2><i class="fas fa-user-plus"></i> Новый пользователь</h2>
+                    <form id="create-user-form">
+                        <div class="form-group">
+                            <label>Логин</label>
+                            <input type="text" name="login" required placeholder="user_login">
+                        </div>
+                        <div class="form-group">
+                            <label>ФИО Сотрудника</label>
+                            <input type="text" name="full_name" required placeholder="Иванов Иван">
+                        </div>
+                        <div class="form-group">
+                            <label>Пароль</label>
+                            <input type="text" name="password" required placeholder="Пароль">
+                        </div>
+                        <div class="form-group">
+                            <label>Роль</label>
+                            <select name="role" id="role-select" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="manager">Начальник района</option>
+                                <option value="executor">Исполнитель</option>
+                                <option value="inspector">Инспектор</option>
+                                <option value="admin">Администратор</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Района</label>
+                            <input type="number" name="district_id" placeholder="Например: 1">
+                            <small style="color:#888;">1=Чирчик, 2=Кибрай, 3=Пастдаргом</small>
+                        </div>
+                        <button type="submit" class="btn btn-block">Создать</button>
+                    </form>
+                </div>
+
+                <div class="card" style="flex: 2;">
+                    <h2><i class="fas fa-folder-open"></i> Загрузка файлов</h2>
+                    <div style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 6px;">
+                        <label style="display:block; margin-bottom:5px; font-weight:bold;">Загрузить приказ или отчет:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="file" id="file-input" style="border: 1px solid #ddd; padding: 5px; flex: 1; background: white;">
+                            <button id="upload-btn" class="btn"><i class="fas fa-upload"></i> Загрузить</button>
+                        </div>
+                    </div>
+                    <h3>Список последних файлов:</h3>
+                    <div class="table-responsive">
+                        <table class="logs-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Файл</th>
+                                    <th>Кто загрузил</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody id="files-body">
+                                <tr><td colspan="4">Загрузка списка...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+            
+            <div class="card" style="margin-top: 20px;">
+                <h2><i class="fas fa-history"></i> История изменений данных</h2>
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Пользователь</th>
+                                <th>Тип</th>
+                                <th>Изменения</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-body">
+                            <tr><td colspan="4">Загрузка логов...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <div id="password-modal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Смена пароля</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form class="modal-form" id="password-form">
+                <div class="form-group">
+                    <label>Новый пароль</label>
+                    <input type="password" id="new-password" required placeholder="Минимум 6 знаков">
+                </div>
+                <button type="submit" class="btn btn-block">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script> 
+    <script src="js/modules/admin_panel.js"></script> 
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                document.getElementById('welcome-title').textContent = `Добро пожаловать, ${user.full_name}!`;
+                
+                if (user.role === 'admin') {
+                    document.getElementById('admin-panel-wrapper').style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

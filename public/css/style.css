@@ -1,0 +1,272 @@
+/* public/css/style.css */
+:root {
+    --primary-color: #2563eb;       /* Синий профессиональный */
+    --primary-hover: #1d4ed8;
+    --bg-color: #f3f4f6;             /* Светло-серый фон */
+    --surface-color: #ffffff;       /* Белый для карточек */
+    --text-color: #1f2937;           /* Темно-серый текст */
+    --border-color: #d1d5db;
+    --danger-color: #dc2626;        /* Красный для ошибок */
+    --success-color: #16a34a;       /* Зеленый для успеха */
+    --warning-color: #f59e0b;       /* Оранжевый для блокировок */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Кнопки */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn:hover { background-color: var(--primary-hover); }
+.btn.btn-block { width: 100%; }
+.btn.btn-small { padding: 5px 12px; font-size: 0.85rem; }
+
+/* Кнопки действий в таблицах */
+.btn-small.danger { background-color: var(--danger-color); color: white; }
+.btn-small.warning { background-color: var(--warning-color); color: white; }
+.btn-small.success { background-color: var(--success-color); color: white; }
+
+/* Сообщения */
+.alert {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    display: none;
+}
+.alert.error {
+    background-color: #fee2e2;
+    color: var(--danger-color);
+    border: 1px solid #fca5a5;
+}
+
+/* =========================================
+   НОВАЯ ЕДИНАЯ ШАПКА (NAVBAR)
+   ========================================= */
+.navbar {
+    background-color: #1e3a8a;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    height: 100%;
+    gap: 5px;
+}
+
+.nav-item {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-item i { margin-right: 8px; }
+.nav-item:hover { background-color: rgba(255, 255, 255, 0.1); color: white; }
+.nav-item.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-bottom-color: #3b82f6;
+}
+
+/* Профиль */
+.user-profile-container {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 12px;
+    border-radius: 30px;
+    transition: background 0.2s;
+}
+
+.user-profile-container:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: white;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    width: 200px;
+    display: none; /* Переключается через JS класс .show */
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+/* Класс для отображения выпадающего меню */
+.profile-dropdown.show { 
+    display: flex !important; 
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item {
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover { background-color: #f3f4f6; }
+.dropdown-item.danger { 
+    color: var(--danger-color); 
+    border-top: 1px solid #f3f3f3; 
+}
+
+/* =========================================
+   СТАТУСЫ И ТАБЛИЦЫ
+   ========================================= */
+.status-active { color: var(--success-color); font-weight: 600; }
+.status-blocked { color: var(--danger-color); font-weight: 600; opacity: 0.7; }
+
+/* Импорт секция */
+.import-section {
+    background: #eff6ff;
+    border: 2px dashed #bfdbfe;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+/* =========================================
+   МОДАЛЬНЫЕ ОКНА
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    display: none; /* Переключается через style.display = 'flex' */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+
+.modal-window {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.close-modal {
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #9ca3af;
+    transition: color 0.2s;
+}
+
+.close-modal:hover { color: var(--danger-color); }
+
+.modal-form .form-group { margin-bottom: 15px; }
+.modal-form label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; }
+.modal-form input, .modal-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.modal-form input:focus { border-color: var(--primary-color); }
